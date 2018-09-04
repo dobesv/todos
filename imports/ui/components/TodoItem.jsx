@@ -45,6 +45,12 @@ class TodoItem extends BaseComponent {
       this.props.onEditingChange(this.props.todo._id, false);
     };
     this.checkEditing = () => this.props.editing;
+
+    this.isEditing = this.isEditing.bind(this);
+  }
+
+  isEditing() {
+    return this.props.editing;
   }
 
   render() {
@@ -85,7 +91,8 @@ class TodoItem extends BaseComponent {
         </a>
         <p>
           {String(!!editing)} ===
-          {String(!!this.checkEditing())} ?
+          {String(!!this.checkEditing())} ===
+          {String(!!this.isEditing())} ?
         </p>
       </div>
     );
