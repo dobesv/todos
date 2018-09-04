@@ -89,7 +89,7 @@ class TodoItem extends BaseComponent {
         >
           <span className="icon-trash" />
         </a>
-        <p>
+        <p style={{':hover': {backgroundColor: 'blue'}}}>
           {String(!!editing)} ===
           {String(!!this.checkEditing())} ===
           {String(!!this.isEditing())} ?
