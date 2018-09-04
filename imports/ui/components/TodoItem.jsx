@@ -1,18 +1,15 @@
+import { displayError } from '../helpers/errors.js';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { _ } from 'meteor/underscore';
 import classnames from 'classnames';
 import i18n from 'meteor/universe:i18n';
 import BaseComponent from './BaseComponent.jsx';
-import { displayError } from '../helpers/errors.js';
+import Radium from 'radium';
 
-import {
-  setCheckedStatus,
-  updateText,
-  remove,
-} from '../../api/todos/methods.js';
+import { remove, setCheckedStatus, updateText } from '../../api/todos/methods.js';
 
-export default class TodoItem extends BaseComponent {
+class TodoItem extends BaseComponent {
   constructor(props) {
     super(props);
     this.throttledUpdate = _.throttle((value) => {
@@ -24,34 +21,30 @@ export default class TodoItem extends BaseComponent {
       }
     }, 300);
 
-    this.setTodoCheckStatus = this.setTodoCheckStatus.bind(this);
-    this.updateTodo = this.updateTodo.bind(this);
-    this.deleteTodo = this.deleteTodo.bind(this);
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
-  }
-
-  onFocus() {
-    this.props.onEditingChange(this.props.todo._id, true);
-  }
-
-  onBlur() {
-    this.props.onEditingChange(this.props.todo._id, false);
-  }
-
-  setTodoCheckStatus(event) {
-    setCheckedStatus.call({
-      todoId: this.props.todo._id,
-      newCheckedStatus: event.target.checked,
-    });
-  }
-
-  updateTodo(event) {
-    this.throttledUpdate(event.target.value);
-  }
-
-  deleteTodo() {
-    remove.call({ todoId: this.props.todo._id }, displayError);
+    this.setTodoCheckStatus = (event) => {
+      console.log(this.props);
+      setCheckedStatus.call({
+        todoId: this.props.todo._id,
+        newCheckedStatus: event.target.checked,
+      });
+    };
+    this.updateTodo = (event) => {
+      console.log(this.props);
+      this.throttledUpdate(event.target.value);
+    };
+    this.deleteTodo = () => {
+      console.log(this.props);
+      remove.call({ todoId: this.props.todo._id }, displayError);
+    };
+    this.onFocus = () => {
+      console.log(this.props);
+      this.props.onEditingChange(this.props.todo._id, true);
+    };
+    this.onBlur = () => {
+      console.log(this.props);
+      this.props.onEditingChange(this.props.todo._id, false);
+    };
+    this.checkEditing = () => this.props.editing;
   }
 
   render() {
@@ -75,7 +68,6 @@ export default class TodoItem extends BaseComponent {
           <span className="checkbox-custom" />
         </label>
         <input
-
           type="text"
           defaultValue={todo.text}
           placeholder={i18n.__('components.todoItem.taskName')}
@@ -91,10 +83,16 @@ export default class TodoItem extends BaseComponent {
         >
           <span className="icon-trash" />
         </a>
+        <p>
+          {String(!!editing)} ===
+          {String(!!this.checkEditing())} ?
+        </p>
       </div>
     );
   }
 }
+
+export default Radium(TodoItem);
 
 TodoItem.propTypes = {
   todo: PropTypes.object,
